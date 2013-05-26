@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">UsbMonitor</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="usb_not_found">USB Device not found!</string>
+    <string name="close">Close</string>
+    <string name="try_again">Try Again</string>
+    <string name="usb_not_found_info">Cannot find proper USB device with given configuration. Check connection and try again open application</string>
+    <string name="usb_not_opened_info">Cannot open communication between devices. Check microcontroller software and try again.</string>
+    <string name="usb_not_opened">Cannot open communication!</string>
+    <string name="usb_not_connected">Cannot connect to device</string>
+    <string name="usb_not_connected_info">Something went wrong during opening communication, try again or close application.</string>
+    <string name="setup_usb">Setup USB device</string>
+
+</resources>
