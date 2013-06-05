@@ -4,24 +4,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 
-import com.nps.usb.DeviceConfiguration;
-import com.nps.usb.UsbGate;
-import com.nps.usb.UsbGateException;
-import com.nps.usb.olimex.OlimexDeviceConfiguration;
-import com.nps.usb.packet.PacketTransfer;
-import com.nps.usb.packet.PacketTransferException;
-
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -34,6 +27,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.nps.usb.DeviceConfiguration;
+import com.nps.usb.UsbGate;
+import com.nps.usb.UsbGateException;
+import com.nps.usb.olimex.OlimexDeviceConfiguration;
+import com.nps.usb.packet.PacketTransfer;
+import com.nps.usb.packet.PacketTransferException;
 
 public class MainActivity extends FragmentActivity {
 
@@ -64,6 +65,9 @@ public class MainActivity extends FragmentActivity {
 	private UsbGate usbGate;
 	private PacketTransfer packetTransfer;
 	
+	private NpsUsbService mBoundService;
+	private boolean mIsBound;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,6 +85,8 @@ public class MainActivity extends FragmentActivity {
 		console = (ScrollView) findViewById(R.id.console);
 		dialogs = new MainDialogs(this);
 		
+		startService();
+		doBindService();
 		usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
 		findUsbDevice();
 	}
@@ -94,6 +100,7 @@ public class MainActivity extends FragmentActivity {
 				Log.d(TAG, "Cannot unregister receiver: " + e.getMessage());
 			}
 		}	
+		doUnbindService();
 		super.onStop();
 	}
 
@@ -147,14 +154,15 @@ public class MainActivity extends FragmentActivity {
 		try {
 			usbGate.createConnection();
 			Log.d(TAG, "USB connection oppened succesfully.");
-			packetTransfer = new PacketTransfer(usbGate);
-			packetTransfer.setToStreamMode();
-			Log.d(TAG, "USB communication switched to stream mode.");
+			return;
+			//packetTransfer = new PacketTransfer(usbGate);
+			//packetTransfer.setToStreamMode();
+			//Log.d(TAG, "USB communication switched to stream mode.");
 		} catch (UsbGateException e) {
 			Log.d(TAG, "Cannot open USB connection.");
 			dialogs.getCannotOpenUsbConnectionDialog();
-		} catch (PacketTransferException e) {
-			Log.d(TAG, "Cannot switch to stream mode: " + e.getMessage());
+		//} catch (PacketTransferException e) {
+		//	Log.d(TAG, "Cannot switch to stream mode: " + e.getMessage());
 		}
 	}
 
@@ -267,4 +275,59 @@ public class MainActivity extends FragmentActivity {
 
 		}
 	};
+	
+	//-------------------------- Service --------------------------------------------
+
+	private ServiceConnection mConnection = new ServiceConnection() {
+		
+		@Override
+	    public void onServiceConnected(ComponentName className, IBinder service) {
+	        // This is called when the connection with the service has been
+	        // established, giving us the service object we can use to
+	        // interact with the service.  Because we have bound to a explicit
+	        // service that we know is running in our own process, we can
+	        // cast its IBinder to a concrete class and directly access it.
+	        mBoundService = ((NpsUsbService.LocalBinder)service).getService();
+
+	        // Tell the user about this for our demo.
+	        Toast.makeText(MainActivity.this, R.string.local_service_connected,
+	                Toast.LENGTH_SHORT).show();
+	    }
+		
+		@Override
+	    public void onServiceDisconnected(ComponentName className) {
+	        // This is called when the connection with the service has been
+	        // unexpectedly disconnected -- that is, its process crashed.
+	        // Because it is running in our same process, we should never
+	        // see this happen.
+	        mBoundService = null;
+	        Toast.makeText(MainActivity.this, R.string.local_service_disconnected,
+	                Toast.LENGTH_SHORT).show();
+	    }
+	};
+
+
+	void doBindService() {
+	    // Establish a connection with the service.  We use an explicit
+	    // class name because we want a specific service implementation that
+	    // we know will be running in our own process (and thus won't be
+	    // supporting component replacement by other applications).
+	    bindService(new Intent(this, 
+	    		NpsUsbService.class), mConnection, Context.BIND_AUTO_CREATE);
+	    mIsBound = true;
+	}
+
+	void doUnbindService() {
+	    if (mIsBound) {
+	        // Detach our existing connection.
+	        unbindService(mConnection);
+	        mIsBound = false;
+	    }
+	}
+	
+	void startService() {
+		ComponentName name = startService(new Intent(this, NpsUsbService.class));
+		Log.d(TAG, name.toString());
+	}
+
 }

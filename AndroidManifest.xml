@@ -18,14 +18,19 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-				<action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
                 <category android:name="android.intent.category.LAUNCHER" />
-             
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
                 <meta-data
                     android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                     android:resource="@xml/olimex_sam3s" />
             </intent-filter>
         </activity>
+        <service
+		  android:name="NpsUsbService"
+		  android:icon="@drawable/ic_launcher"
+		  android:label="@string/service_name"/>
     </application>
 
 </manifest>
