@@ -14,12 +14,16 @@
     <string name="usb_not_opened">Cannot open communication!</string>
     <string name="usb_not_connected">Cannot connect to device</string>
     <string name="usb_not_connected_info">Something went wrong during opening communication, try again or close application.</string>
+    <string name="usb_disconnected">USB device disconnected</string>
+    <string name="usb_disconnected_info">USB device has been disconnected. Application will be closed.</string>
+    <string name="usb_error_switch_to_stream">Switch to Stream Mode</string>
+    <string name="usb_error_switch_to_stream_info">Cannot switch USB device to stream mode.</string>
     <string name="setup_usb">Setup USB device</string>
     <string name="service_name">nps usb service</string>
-    <string name="local_service_started">Nps USB Service started</string>
+    <string name="local_service_started">Nps USB Service is running</string>
     <string name="local_service_stopped">Nps USB Service stopped</string>
     <string name="local_service_label">Nps USB Service</string>
-    <string name="local_service_connected">Nps USB Service connected</string>
-    <string name="local_service_disconnected">Nps USB Service disconnected</string>
+    <string name="local_service_connected">Nps USB Service connected to application</string>
+    <string name="local_service_disconnected">Nps USB Service disconnected from application</string>
 
 </resources>

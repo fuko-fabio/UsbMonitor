@@ -1,5 +1,8 @@
 package com.nps.usb.olimex;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.nps.usb.DeviceConfiguration;
 
 /**
@@ -9,12 +12,57 @@ import com.nps.usb.DeviceConfiguration;
  */
 public class OlimexDeviceConfiguration implements DeviceConfiguration {
 
-	private String name = "Olimex sam3";
-	private int productId = 24857;
-	private int vendorId = 1003;
-	private int analog= 4;
-	private int digital = 32;
-	private int pwm = 4;
+	private String name;
+	private int productId;
+	private int vendorId;
+	private int analog;
+	private int digital;
+	private int pwm;
+	
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(name);
+		dest.writeInt(productId);
+		dest.writeInt(vendorId);
+		dest.writeInt(analog);
+		dest.writeInt(digital);
+		dest.writeInt(pwm);
+	}
+
+    public static final Parcelable.Creator<OlimexDeviceConfiguration> CREATOR
+		    = new Parcelable.Creator<OlimexDeviceConfiguration>() {
+		public OlimexDeviceConfiguration createFromParcel(Parcel in) {
+		    return new OlimexDeviceConfiguration(in);
+		}
+		
+		public OlimexDeviceConfiguration[] newArray(int size) {
+		    return new OlimexDeviceConfiguration[size];
+		}
+	};
+	
+    private OlimexDeviceConfiguration(Parcel in) {
+    	name = in.readString();
+    	productId = in.readInt();
+    	vendorId = in.readInt();
+    	analog = in.readInt();
+    	digital = in.readInt();
+    	pwm = in.readInt();
+    }
+
+    public OlimexDeviceConfiguration() {
+    	name = "Olimex sam3";
+    	productId = 24857;
+    	vendorId = 1003;
+    	analog= 4;
+    	digital = 32;
+    	pwm = 4;
+    }
 
 	@Override
 	public String getName() {

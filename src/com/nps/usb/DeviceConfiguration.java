@@ -1,10 +1,13 @@
 package com.nps.usb;
+
+import android.os.Parcelable;
+
 /**
  * @author Norbert Pabian
  * www.npsoftware.pl
  *
  */
-public interface DeviceConfiguration {
+public interface DeviceConfiguration extends Parcelable {
 	
 	/**
 	 * @return device name

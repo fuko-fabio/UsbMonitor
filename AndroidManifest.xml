@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="12"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="12" />
 	<uses-feature android:name="android.hardware.usb.host" />
     <application
         android:allowBackup="true"
